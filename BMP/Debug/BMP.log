@@ -1,0 +1,4 @@
+﻿  Source.c
+C:\Users\botme\source\repos\BMP\BMP\Source.c(7,11): warning C4477: "scanf": в строке форматирования "%s" требуется аргумент типа "char *", но вариативный аргумент "1" имеет тип "const char *"
+C:\Users\botme\source\repos\BMP\BMP\Source.c(55,35): warning C4244: функция: преобразование "double" в "float", возможна потеря данных
+  BMP.vcxproj -> C:\Users\botme\source\repos\BMP\Debug\BMP.exe

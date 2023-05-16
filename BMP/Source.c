@@ -29,7 +29,7 @@ int main() {
         char* outPath = malloc(sizeof(char) * PATHSIZE);
 
         printf("Wait...\n");
-        double gamma;
+        double gamma = 0;
         switch (func) {
         case 1:
             setPath(outPath);
