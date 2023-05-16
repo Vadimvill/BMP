@@ -1,0 +1,1 @@
+msbuild BMP\BMP.vcxproj
