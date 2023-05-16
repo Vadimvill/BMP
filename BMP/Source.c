@@ -2,7 +2,7 @@
 #include "stdlib.h"
 #include "bmp.h"
 #define PATHSIZE 2048
-void setPath(const char* path) {
+void setPath(char* path) {
     printf("Set outPath\n");
     scanf("%s", path);
 }
@@ -13,6 +13,7 @@ int main() {
     BMPHeader* header = readBMPHeader(path);
     if (header == NULL) {
         printf("error");
+        free(path);
         return 1;
     }
     if (!is24BitBmp(header)) return 0;
@@ -60,6 +61,7 @@ int main() {
             break;
         default:
             printf("error\n");
+            free(outPath);
             break;
         }
         printf("Ready\n");
