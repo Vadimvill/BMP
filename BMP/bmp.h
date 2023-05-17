@@ -36,6 +36,7 @@ Pixel** createCopy(Pixel** pixel, int col, int row);
 void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size);
 BMPHeader* readBMPHeader(const char* path);
 Pixel* createStructurePixel(BMPHeader* header, const char* path);
+void hz(Pixel** newPixel, int i, int j, unsigned char r[ARRAYSIZE], unsigned char[ARRAYSIZE], unsigned char[ARRAYSIZE], int index);
 void BmpToNegative(BMPHeader* header, const char* path, Pixel* pixel);
 void SaveBmp(BMPHeader* header, const char* path, Pixel* pixel);
 void BmpToWhitBlack(BMPHeader* header, const char* path, Pixel* pixel);
