@@ -52,8 +52,9 @@ void BmpToWhitBlack(BMPHeader* header, const char* path, Pixel* pixel) {
     }
     SaveBmp(header, path, pixel);
 }
-void SaveBmp(BMPHeader* header, const char* path, Pixel* pixel) {
+void SaveBmp(const BMPHeader* header, const char* path,const Pixel* pixel) {
     FILE* file = fopen(path, "wb");
+    if (file == NULL) return;
     fwrite(header, sizeof(BMPHeader), 1, file);
     for (int i = 0;i < header->imageSize / 3;i++) {
         fwrite(&pixel[i].red, sizeof(pixel->red), 1, file);
@@ -64,65 +65,58 @@ void SaveBmp(BMPHeader* header, const char* path, Pixel* pixel) {
 }
 void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
     Pixel** pixels = malloc(sizeof(Pixel*) * header->height);
-    for (int i = 0;i < header->height;i++) {
+    Pixel** newPixel = malloc(sizeof(Pixel*) * header->height);
+    for (int i = 0; i < header->height; i++) {
         pixels[i] = malloc(sizeof(Pixel) * header->width);
-    }
-    long int m = 0;
-    for (int i = 0;i < header->height;i++) {
-        for (int j = 0;j < header->width;j++) {
-            pixels[i][j] = pixel[m];
-            m++;
+        newPixel[i] = malloc(sizeof(Pixel) * header->width);
+        for (int j = 0; j < header->width; j++) {
+            pixels[i][j] = pixel[i * header->width + j];
         }
     }
-    Pixel** newPixel = createCopy(pixels, header->width, header->height);
-    for (int i = 0;i < header->height;i++) {
-        for (int j = 0;j < header->width;j++) {
+
+    for (int i = 0; i < header->height; i++) {
+        for (int j = 0; j < header->width; j++) {
+            if (j - size < 0 || j + size >= header->width ||
+                i - size < 0 || i + size >= header->height) {
+                newPixel[i][j] = pixels[i][j];
+                continue;
+            }
+
             unsigned char r[ARRAYSIZE];
             unsigned char g[ARRAYSIZE];
             unsigned char b[ARRAYSIZE];
             int count = 0;
-            if (j - size < 0) continue;
-            if (j + size > header->width) continue;
-            if (i - size < 0) continue;
-            if (i + size > header->height) continue;
-            for (int l = i - size;l < i + size;l++) {
-                for (int z = j - size;z < j + size;z++) {
+            for (int l = i - size; l <= i + size; l++) {
+                for (int z = j - size; z <= j + size; z++) {
                     r[count] = pixels[l][z].red;
                     g[count] = pixels[l][z].green;
                     b[count] = pixels[l][z].blue;
                     count++;
                 }
             }
-            int lengthArray = count;
-            insertionSort(r, lengthArray);
-            insertionSort(g, lengthArray);
-            insertionSort(b, lengthArray);
-            int index = lengthArray / 2;
-            if (lengthArray > 0) {
-                newPixel[i][j].red = r[index];
-                newPixel[i][j].green = g[index];
-                newPixel[i][j].blue = b[index];
-            }
-           
+            int index = count / 2;
+            insertionSort(r, count);
+            insertionSort(g, count);
+            insertionSort(b, count);
+            newPixel[i][j].red = r[index];
+            newPixel[i][j].green = g[index];
+            newPixel[i][j].blue = b[index];
         }
     }
-    m = 0;
-    for (int i = 0;i < header->height;i++) {
-        for (int j = 0;j < header->width;j++) {
-            pixel[m] = newPixel[i][j];
-            m++;
+
+    for (int i = 0; i < header->height; i++) {
+        for (int j = 0; j < header->width; j++) {
+            pixel[i * header->width + j] = newPixel[i][j];
         }
-    }
-    SaveBmp(header, path, pixel);
-    int i = header->height - 1;
-    while (i >= 0) {
         free(pixels[i]);
         free(newPixel[i]);
-        i--;
     }
     free(pixels);
     free(newPixel);
+
+    SaveBmp(header, path, pixel);
 }
+
 char isBMP(const char* path) {
     int i = strlen(path);
     i--;
@@ -130,15 +124,16 @@ char isBMP(const char* path) {
 
     return 0;
 }
-char is24BitBmp(BMPHeader* header) {
+char is24BitBmp(const BMPHeader* header) {
     if (header->bitsPerPixel == 24) return 1;
 
     return 0;
 }
 void insertionSort(unsigned char arr[], int n)
 {
-    int i, key, j;
-    for (i = 1; i < n; i++)
+    int key = 0;
+    int j = 0;
+    for (int i = 1; i < n; i++)
     {
         key = arr[i];
         j = i - 1;
@@ -148,7 +143,7 @@ void insertionSort(unsigned char arr[], int n)
             arr[j + 1] = arr[j];
             j = j - 1;
         }
-        arr[j + 1] = key;
+        arr[j + 1] = (unsigned char)key;
     }
 }
 Pixel** createCopy(Pixel** pixel, int col, int row) {
@@ -163,7 +158,7 @@ Pixel** createCopy(Pixel** pixel, int col, int row) {
     }
     return newPix;
 }
-Pixel* createStructurePixel(BMPHeader* header, const char* path) {
+Pixel* createStructurePixel(const BMPHeader* header, const char* path) {
     FILE* file = fopen(path, "rb");
     if (!file) {
         printf("Не удалось открыть файл\n");
