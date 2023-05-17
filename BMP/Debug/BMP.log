@@ -1,8 +1,8 @@
-﻿  Source.c
-  bmp.c
+﻿  bmp.c
 C:\Users\botme\source\repos\BMP\BMP\bmp.c(56,31): warning C4028: формальный параметр 1 отличается от объявления
 C:\Users\botme\source\repos\BMP\BMP\bmp.c(56,69): warning C4028: формальный параметр 3 отличается от объявления
-C:\Users\botme\source\repos\BMP\BMP\bmp.c(148,34): warning C4028: формальный параметр 1 отличается от объявления
-C:\Users\botme\source\repos\BMP\BMP\bmp.c(182,46): warning C4028: формальный параметр 1 отличается от объявления
+C:\Users\botme\source\repos\BMP\BMP\bmp.c(133,34): warning C4028: формальный параметр 1 отличается от объявления
+C:\Users\botme\source\repos\BMP\BMP\bmp.c(167,46): warning C4028: формальный параметр 1 отличается от объявления
+  Source.c
   Создание кода...
   BMP.vcxproj -> C:\Users\botme\source\repos\BMP\Debug\BMP.exe

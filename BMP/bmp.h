@@ -1,6 +1,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
+#define ARRAYSIZE 10000
 #pragma pack(push, 1)
 typedef struct {
     char signature[2];  // Сигнатура файла (BM)
