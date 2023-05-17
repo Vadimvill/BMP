@@ -16,7 +16,10 @@ int main() {
         free(path);
         return 1;
     }
-    if (!is24BitBmp(header)) return 0;
+    if (!is24BitBmp(header)) {
+        free(path);
+        return 0;
+    }
     int bool = 1;
     Pixel* pixel = createStructurePixel(header, path);
     rewind(stdin);
@@ -57,6 +60,7 @@ int main() {
             gammaCorrection(header, outPath, pixel, gamma);
             break;
         case 5:
+            free(outPath);
             bool = 0;
             break;
         default:
