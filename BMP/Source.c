@@ -64,9 +64,9 @@ int main() {
             break;
         default:
             printf("error\n");
-            free(outPath);
             break;
         }
+        free(outPath);
         printf("Ready\n");
         rewind(stdin);
         free(pixel);
