@@ -15,13 +15,14 @@ void gammaCorrection(BMPHeader* header, const char* path, Pixel* pixel, double g
     }
     SaveBmp(header, path, pixel);
 }
-float SetValue(float a) {
-    while (scanf("%f", &a) != 1 || getchar() != '\n') {
+double SetValue(double a) {
+    while (scanf("%lf", &a) != 1 || getchar() != '\n') {
         printf("Error\n");
         rewind(stdin);
     }
     return a;
 }
+
 BMPHeader* readBMPHeader(const char* path) {
     FILE* file = fopen(path, "rb");
     if (!file) {
@@ -66,9 +67,20 @@ void SaveBmp(const BMPHeader* header, const char* path,const Pixel* pixel) {
 void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
     Pixel** pixels = malloc(sizeof(Pixel*) * header->height);
     Pixel** newPixel = malloc(sizeof(Pixel*) * header->height);
+    if (!pixels || !newPixel) {
+        printf("Memory allocation failed.\n");
+        exit(1);
+    }
+
     for (int i = 0; i < header->height; i++) {
         pixels[i] = malloc(sizeof(Pixel) * header->width);
         newPixel[i] = malloc(sizeof(Pixel) * header->width);
+
+        if (!pixels[i] || !newPixel[i]) {
+            printf("Memory allocation failed.\n");
+            exit(1);
+        }
+
         for (int j = 0; j < header->width; j++) {
             pixels[i][j] = pixel[i * header->width + j];
         }
@@ -86,6 +98,7 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
             unsigned char g[ARRAYSIZE];
             unsigned char b[ARRAYSIZE];
             int count = 0;
+
             for (int l = i - size; l <= i + size; l++) {
                 for (int z = j - size; z <= j + size; z++) {
                     r[count] = pixels[l][z].red;
@@ -94,16 +107,21 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
                     count++;
                 }
             }
-            int index = count / 2;
+
             insertionSort(r, count);
             insertionSort(g, count);
             insertionSort(b, count);
+
+            int index = count / 2;
+
             if (index != 0) {
                 newPixel[i][j].red = r[index];
                 newPixel[i][j].green = g[index];
                 newPixel[i][j].blue = b[index];
             }
-            
+            else {
+                newPixel[i][j] = pixels[i][j];
+            }
         }
     }
 

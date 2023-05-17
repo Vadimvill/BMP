@@ -56,7 +56,7 @@ int main() {
         case 4:
             setPath(outPath);
             printf("Set gamma\n");
-            gamma = (double)SetValue(gamma);
+            gamma = SetValue(gamma);
             gammaCorrection(header, outPath, pixel, gamma);
             break;
         case 5:

@@ -27,7 +27,7 @@ typedef struct {
     unsigned char blue;
 }Pixel;
 #pragma pack(pop)
-float SetValue(float a);
+double SetValue(double a);
 char isBMP(const char* path);
 char is24BitBmp(BMPHeader* header);
 void gammaCorrection(BMPHeader* header, const char* path, Pixel* pixel, double gamma);
