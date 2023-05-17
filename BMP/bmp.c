@@ -3,7 +3,6 @@
 #include "stdlib.h"
 #include "bmp.h"
 #include "math.h"
-//P' = pow(P / 255.0, gamma) * 255.0;
 #define ARRAYSIZE 10000
 void gammaCorrection(BMPHeader* header, const char* path, Pixel* pixel, double gamma) {
     for (int i = 0;i < header->imageSize / 3;i++) {

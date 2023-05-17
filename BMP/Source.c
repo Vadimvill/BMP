@@ -21,7 +21,6 @@ int main() {
         return 0;
     }
     int bool = 1;
-    Pixel* pixel = createStructurePixel(header, path);
     rewind(stdin);
     while (bool) {
         Pixel* pixel = createStructurePixel(header, path);
@@ -56,7 +55,7 @@ int main() {
         case 4:
             setPath(outPath);
             printf("Set gamma\n");
-            gamma = SetValue(gamma);
+            gamma = (double)SetValue(gamma);
             gammaCorrection(header, outPath, pixel, gamma);
             break;
         case 5:
