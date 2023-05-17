@@ -82,32 +82,9 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
                 newPixel[i][j] = pixels[i][j];
                 continue;
             }
-
-            unsigned char r[ARRAYSIZE];
-            unsigned char g[ARRAYSIZE];
-            unsigned char b[ARRAYSIZE];
-            int count = 0;
-            int l = i - size;
-            int z = j - size;
-            for (int k = 0; k < (2 * size + 1) * (2 * size + 1); k++) {
-                int l = i + (k / (2 * size + 1)) - size;
-                int z = j + (k % (2 * size + 1)) - size;
-                if (l < 0 || l >= header->height || z < 0 || z >= header->width) {
-                    continue;
-                }
-                r[count] = pixels[l][z].red;
-                g[count] = pixels[l][z].green;
-                b[count] = pixels[l][z].blue;
-                count++;
-            }
-            int index = count / 2;
-            insertionSort(r, count);
-            insertionSort(g, count);
-            insertionSort(b, count);
-            hz(newPixel, i, j, r, g, b, index);
+            hz2(i, size, j, pixels, newPixel);
         }
     }
-
 
     for (int i = 0; i < header->height; i++) {
         for (int j = 0; j < header->width; j++) {
@@ -120,6 +97,25 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
     free(newPixel);
 
     SaveBmp(header, path, pixel);
+}
+void hz2(int i,int size,int j,Pixel** pixels,Pixel** newPixel) {
+    unsigned char r[ARRAYSIZE];
+    unsigned char g[ARRAYSIZE];
+    unsigned char b[ARRAYSIZE];
+    int count = 0;
+    for (int l = i - size; l <= i + size; l++) {
+        for (int z = j - size; z <= j + size; z++) {
+            r[count] = pixels[l][z].red;
+            g[count] = pixels[l][z].green;
+            b[count] = pixels[l][z].blue;
+            count++;
+        }
+    }
+    int index = count / 2;
+    insertionSort(r, count);
+    insertionSort(g, count);
+    insertionSort(b, count);
+    hz(newPixel, i, j, r, g, b, index);
 }
 void hz(Pixel** newPixel, int i, int j,const unsigned char r[ARRAYSIZE],const unsigned char g[ARRAYSIZE],const unsigned char b[ARRAYSIZE], int index) {
     if (index != 0) {
