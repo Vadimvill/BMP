@@ -47,6 +47,7 @@ int main() {
             printf("Set size from 0 to 100\n");
             func = (int)SetValue(0);
             if (func > 100 || func < 0) {
+                free(outPath);
                 printf("Error\n");
                 continue;
             }
