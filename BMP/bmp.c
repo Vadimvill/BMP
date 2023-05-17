@@ -89,16 +89,16 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
             int count = 0;
             int l = i - size;
             int z = j - size;
-            while (l <= i + size) {
-                while (z <= j + size) {
-                    r[count] = pixels[l][z].red;
-                    g[count] = pixels[l][z].green;
-                    b[count] = pixels[l][z].blue;
-                    count++;
-                    z++;
+            for (int k = 0; k < (2 * size + 1) * (2 * size + 1); k++) {
+                int l = i + (k / (2 * size + 1)) - size;
+                int z = j + (k % (2 * size + 1)) - size;
+                if (l < 0 || l >= header->height || z < 0 || z >= header->width) {
+                    continue;
                 }
-                l++;
-                z = j - size;
+                r[count] = pixels[l][z].red;
+                g[count] = pixels[l][z].green;
+                b[count] = pixels[l][z].blue;
+                count++;
             }
             int index = count / 2;
             insertionSort(r, count);
