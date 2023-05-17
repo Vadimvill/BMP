@@ -87,21 +87,27 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
             unsigned char g[ARRAYSIZE];
             unsigned char b[ARRAYSIZE];
             int count = 0;
-            for (int l = i - size; l <= i + size; l++) {
-                for (int z = j - size; z <= j + size; z++) {
+            int l = i - size;
+            int z = j - size;
+            while (l <= i + size) {
+                while (z <= j + size) {
                     r[count] = pixels[l][z].red;
                     g[count] = pixels[l][z].green;
                     b[count] = pixels[l][z].blue;
                     count++;
+                    z++;
                 }
+                l++;
+                z = j - size;
             }
             int index = count / 2;
             insertionSort(r, count);
             insertionSort(g, count);
             insertionSort(b, count);
-            hz(newPixel, i, j, r, g, b,index);
+            hz(newPixel, i, j, r, g, b, index);
         }
     }
+
 
     for (int i = 0; i < header->height; i++) {
         for (int j = 0; j < header->width; j++) {
@@ -115,7 +121,7 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
 
     SaveBmp(header, path, pixel);
 }
-void hz(Pixel** newPixel, int i, int j, unsigned char r[ARRAYSIZE], unsigned char g[ARRAYSIZE], unsigned char b[ARRAYSIZE], int index) {
+void hz(Pixel** newPixel, int i, int j,const unsigned char r[ARRAYSIZE],const unsigned char g[ARRAYSIZE],const unsigned char b[ARRAYSIZE], int index) {
     if (index != 0) {
         newPixel[i][j].red = r[index];
         newPixel[i][j].green = g[index];
