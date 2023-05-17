@@ -115,9 +115,11 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
         }
     }
     SaveBmp(header, path, pixel);
-    for (int i = header->height - 1;i != -1;i--) {
+    int i = header->height - 1;
+    while (i >= 0) {
         free(pixels[i]);
         free(newPixel[i]);
+        i--;
     }
     free(pixels);
     free(newPixel);
