@@ -69,8 +69,10 @@ int main() {
             break;
         }
         printf("Ready\n");
+        free(outPath);
         rewind(stdin);
         free(pixel);
     }
+    free(path);
     free(header);
 }
