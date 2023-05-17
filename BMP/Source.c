@@ -59,7 +59,6 @@ int main() {
             gammaCorrection(header, outPath, pixel, gamma);
             break;
         case 5:
-            free(outPath);
             bool = 0;
             break;
         default:
