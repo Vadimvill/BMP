@@ -67,53 +67,52 @@ void SaveBmp(const BMPHeader* header, const char* path,const Pixel* pixel) {
 void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
     Pixel** pixels = malloc(sizeof(Pixel*) * header->height);
     Pixel** newPixel = malloc(sizeof(Pixel*) * header->height);
-    if (!pixels || !newPixel) {
-        printf("Memory allocation failed.\n");
-        exit(1);
-    }
-
     for (int i = 0; i < header->height; i++) {
         pixels[i] = malloc(sizeof(Pixel) * header->width);
         newPixel[i] = malloc(sizeof(Pixel) * header->width);
+    }
 
-        if (!pixels[i] || !newPixel[i]) {
-            printf("Memory allocation failed.\n");
-            exit(1);
-        }
-
+    int pixelIndex = 0;
+    for (int i = 0; i < header->height; i++) {
         for (int j = 0; j < header->width; j++) {
-            pixels[i][j] = pixel[i * header->width + j];
+            pixels[i][j] = pixel[pixelIndex++];
         }
     }
 
-    for (int i = 0; i < header->height; i++) {
-        for (int j = 0; j < header->width; j++) {
-            if (j - size < 0 || j + size >= header->width ||
-                i - size < 0 || i + size >= header->height) {
-                newPixel[i][j] = pixels[i][j];
-                continue;
-            }
-
+    for (int i = size; i < header->height - size; i++) {
+        for (int j = size; j < header->width - size; j++) {
             unsigned char r[ARRAYSIZE];
             unsigned char g[ARRAYSIZE];
             unsigned char b[ARRAYSIZE];
             int count = 0;
 
-            for (int l = i - size; l <= i + size; l++) {
-                for (int z = j - size; z <= j + size; z++) {
-                    r[count] = pixels[l][z].red;
-                    g[count] = pixels[l][z].green;
-                    b[count] = pixels[l][z].blue;
-                    count++;
-                }
+            for (int l = i - size, count = 0; l <= i + size; l++) {
+                r[count] = pixels[l][j - size].red;
+                g[count] = pixels[l][j - size].green;
+                b[count] = pixels[l][j - size].blue;
+                count++;
+                r[count] = pixels[l][j + size].red;
+                g[count] = pixels[l][j + size].green;
+                b[count] = pixels[l][j + size].blue;
+                count++;
+            }
+            for (int z = j - size; z <= j + size; z++) {
+                r[count] = pixels[i - size][z].red;
+                g[count] = pixels[i - size][z].green;
+                b[count] = pixels[i - size][z].blue;
+                count++;
+                r[count] = pixels[i + size][z].red;
+                g[count] = pixels[i + size][z].green;
+                b[count] = pixels[i + size][z].blue;
+                count++;
             }
 
+            int index = count / 2;
             insertionSort(r, count);
             insertionSort(g, count);
             insertionSort(b, count);
 
-            int index = count / 2;
-
+            
             if (index != 0) {
                 newPixel[i][j].red = r[index];
                 newPixel[i][j].green = g[index];
@@ -125,18 +124,21 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
         }
     }
 
+    pixelIndex = 0;
     for (int i = 0; i < header->height; i++) {
         for (int j = 0; j < header->width; j++) {
-            pixel[i * header->width + j] = newPixel[i][j];
+            pixel[pixelIndex++] = newPixel[i][j];
         }
         free(pixels[i]);
         free(newPixel[i]);
     }
+
     free(pixels);
     free(newPixel);
 
     SaveBmp(header, path, pixel);
 }
+
 
 char isBMP(const char* path) {
     int i = strlen(path);
