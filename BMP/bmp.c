@@ -94,9 +94,10 @@ void MediumFilter(BMPHeader* header, const char* path, Pixel* pixel, int size) {
                     count++;
                 }
             }
-            insertionSort(r, count);
-            insertionSort(g, count);
-            insertionSort(b, count);
+            int lengthArray = count;
+            insertionSort(r, lengthArray);
+            insertionSort(g, lengthArray);
+            insertionSort(b, lengthArray);
             int index = count / 2;
             newPixel[i][j].red = r[index];
             newPixel[i][j].green = g[index];
